@@ -6,6 +6,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.css';
+import {Link} from 'react-router-dom'
 
 class App extends Component {
 
@@ -15,13 +16,23 @@ class App extends Component {
     this.state = {
       isLoading: false,
       formData: {
-        textfield1: '',
-        textfield2: '',
-        select1: 1,
-        select2: 1,
-        select3: 1
+        search_query: '',
       },
-      result: ""
+      pos_result: {
+        rate: '',
+        title: '',
+        link: ''
+      },
+      neu_result: {
+        rate: '',
+        title: '',
+        link: ''
+      },
+      neg_result: {
+        rate: '',
+        title: '',
+        link: ''
+      }
     };
   }
 
@@ -50,87 +61,46 @@ class App extends Component {
       .then(response => response.json())
       .then(response => {
         this.setState({
-          result: response.result,
+          pos_result: response.pos_result,
+          neu_result: response.neu_result,
+          neg_result: response.neg_result,
           isLoading: false
         });
       });
   }
 
   handleCancelClick = (event) => {
-    this.setState({ result: "" });
+    this.setState({ pos_result: {
+      rate: '',
+      title: '',
+      link: ''
+      }
+    });
   }
 
   render() {
     const isLoading = this.state.isLoading;
     const formData = this.state.formData;
-    const result = this.state.result;
+    const pos_result = this.state.pos_result;
+    const neu_result = this.state.neu_result;
+    const neg_result = this.state.neg_result;
 
     return (
       <Container>
         <div>
-          <h1 className="title">ML React App</h1>
+          <h1 className="title">Fast Google Summary</h1>
         </div>
         <div className="content">
           <Form>
             <Form.Row>
               <Form.Group as={Col}>
-                <Form.Label>Text Field 1</Form.Label>
+                <Form.Label>Ask Google if something is good or bad! </Form.Label>
                 <Form.Control 
                   type="text" 
-                  placeholder="Text Field 1" 
-                  name="textfield1"
-                  value={formData.textfield1}
+                  placeholder="Example: Is hitler a good person?" 
+                  name="search_query"
+                  value={formData.search_query}
                   onChange={this.handleChange} />
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label>Text Field 2</Form.Label>
-                <Form.Control 
-                  type="text" 
-                  placeholder="Text Field 2" 
-                  name="textfield2"
-                  value={formData.textfield2}
-                  onChange={this.handleChange} />
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group as={Col}>
-                <Form.Label>Select 1</Form.Label>
-                <Form.Control 
-                  as="select"
-                  value={formData.select1}
-                  name="select1"
-                  onChange={this.handleChange}>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                </Form.Control>
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label>Select 2</Form.Label>
-                <Form.Control 
-                  as="select"
-                  value={formData.select2}
-                  name="select2"
-                  onChange={this.handleChange}>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                </Form.Control>
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label>Select 3</Form.Label>
-                <Form.Control 
-                  as="select"
-                  value={formData.select3}
-                  name="select3"
-                  onChange={this.handleChange}>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                </Form.Control>
               </Form.Group>
             </Form.Row>
             <Row>
@@ -140,7 +110,7 @@ class App extends Component {
                   variant="success"
                   disabled={isLoading}
                   onClick={!isLoading ? this.handlePredictClick : null}>
-                  { isLoading ? 'Making prediction' : 'Predict' }
+                  { isLoading ? 'Searching... (this takes ~30s)' : 'Search' }
                 </Button>
               </Col>
               <Col>
@@ -149,17 +119,45 @@ class App extends Component {
                   variant="danger"
                   disabled={isLoading}
                   onClick={this.handleCancelClick}>
-                  Reset prediction
+                  Reset search
                 </Button>
               </Col>
             </Row>
           </Form>
-          {result === "" ? null :
-            (<Row>
-              <Col className="result-container">
-                <h5 id="result">{result}</h5>
-              </Col>
-            </Row>)
+          {pos_result["rate"] === "" ? null :
+            (<div>
+              <Row>
+                <Col className="result-container">
+                  <h5 id="pos_result">{pos_result["rate"]}</h5>
+                </Col>
+                <Col className="result-container">
+                  <h5 id="neu_result">{neu_result["rate"]}</h5>
+                </Col>
+                <Col className="result-container">
+                  <h5 id="neg_result">{neg_result["rate"]}</h5>
+                </Col>
+              </Row>
+              <Row>
+                <Col className="result-container">
+                  <h5 id="pos_result">Most Positive Article:</h5>
+                </Col>
+                <Col className="result-container">
+                  <h5 id="neg_result">Most Negative Article:</h5>
+                </Col>
+              </Row>
+              <Row>
+                <Col className="title-container">
+                  <a href={pos_result["link"]}>
+                  <h5 id="title">{pos_result["title"]}</h5>
+                  </a>
+                </Col>
+                <Col className="title-container">
+                  <a href={neg_result["link"]}>
+                  <h5 id="title">{neg_result["title"]}</h5>
+                  </a>
+                </Col>
+              </Row>
+            </div>)
           }
         </div>
       </Container>

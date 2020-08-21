@@ -20,10 +20,10 @@ html, body {
   padding-top: 100px;
   text-align: center;
   text-transform: uppercase;
-  font-weight: 600;
-  font-size: 4em;
-  letter-spacing: 0.15rem;
-  color: #fff;
+  font-weight: 400;
+  font-size: 3em;
+  letter-spacing: 0.1rem;
+  border-bottom-color: #00f;
 }
 
 label {
@@ -32,12 +32,32 @@ label {
 
 .result-container {
   text-align: center;
-  font-weight: 600;
-  font-size: 4em;
+  font-weight: 500;
+  font-size: 2em;
   letter-spacing: 0.15rem;
   padding: 20px 0 0;
 }
 
-#result {
+.title-container {
+  text-align: center;
+  font-weight: 200;
+  font-size: 0.5em;
+  letter-spacing: 0.1rem;
+  padding: 10px 0 0;
+}
+
+#pos_result {
   color: #000;
+}
+
+#neu_result {
+  color: #000;
+}
+
+#neg_result {
+  color: #000;
+}
+
+#title {
+  color: #00f;
 }
